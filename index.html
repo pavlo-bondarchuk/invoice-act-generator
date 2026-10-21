@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Invoice & Act Generator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.umd.cjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Local document generator</p>
+      <h1>Рахунки та акти</h1>
+      <p class="subtitle">Дані існують лише у пам’яті цієї вкладки. Нічого не зберігається автоматично.</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="button ghost" id="importJsonButton">Імпорт JSON</button>
+      <button type="button" class="button ghost" id="exportJsonButton">Експорт JSON</button>
+      <input type="file" id="jsonFileInput" accept="application/json,.json" hidden>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="form-panel">
+      <div class="toolbar card compact">
+        <div class="field grow">
+          <label for="presetSelect">Пресет сесії</label>
+          <select id="presetSelect">
+            <option value="">Без пресету</option>
+          </select>
+        </div>
+        <button type="button" class="button secondary" id="savePresetButton">Зберегти пресет</button>
+        <button type="button" class="button ghost danger" id="deletePresetButton">Видалити</button>
+      </div>
+
+      <form id="generatorForm" novalidate>
+        <section class="card">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">01</p>
+              <h2>Виконавець</h2>
+            </div>
+          </div>
+          <div class="grid two">
+            <div class="field span-2"><label for="sellerName">Назва / ПІБ *</label><input id="sellerName" autocomplete="off"></div>
+            <div class="field"><label for="sellerTaxId">ІПН / РНОКПП *</label><input id="sellerTaxId" autocomplete="off"></div>
+            <div class="field"><label for="sellerIban">IBAN</label><input id="sellerIban" autocomplete="off"></div>
+            <div class="field"><label for="sellerBank">Банк</label><input id="sellerBank" autocomplete="off"></div>
+            <div class="field"><label for="sellerTaxStatus">Система оподаткування</label><input id="sellerTaxStatus" autocomplete="off"></div>
+            <div class="field"><label for="sellerVat">ПДВ</label><select id="sellerVat"><option value="Без ПДВ">Без ПДВ</option><option value="З ПДВ">З ПДВ</option></select></div>
+            <div class="field"><label for="sellerEmail">Email</label><input id="sellerEmail" type="email" autocomplete="off"></div>
+            <div class="field"><label for="sellerPhone">Телефон</label><input id="sellerPhone" autocomplete="off"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div><p class="section-kicker">02</p><h2>Замовник</h2></div>
+          </div>
+          <div class="grid two">
+            <div class="field span-2"><label for="customerName">Назва / ПІБ *</label><input id="customerName" autocomplete="off"></div>
+            <div class="field"><label for="customerTaxId">ЄДРПОУ / ІПН *</label><input id="customerTaxId" autocomplete="off"></div>
+            <div class="field"><label for="customerIban">IBAN</label><input id="customerIban" autocomplete="off"></div>
+            <div class="field"><label for="customerBank">Банк</label><input id="customerBank" autocomplete="off"></div>
+            <div class="field"><label for="customerEmail">Email</label><input id="customerEmail" type="email" autocomplete="off"></div>
+            <div class="field"><label for="customerPhone">Телефон</label><input id="customerPhone" autocomplete="off"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div><p class="section-kicker">03</p><h2>Договір</h2></div>
+          </div>
+          <div class="grid two">
+            <div class="field"><label for="contractNumber">Номер</label><input id="contractNumber" autocomplete="off"></div>
+            <div class="field"><label for="contractDate">Дата</label><input id="contractDate" type="date"></div>
+            <div class="field span-2"><label for="contractTitle">Назва / предмет договору</label><input id="contractTitle" placeholder="про надання послуг" autocomplete="off"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div><p class="section-kicker">04</p><h2>Документ</h2></div>
+          </div>
+          <div class="grid two">
+            <div class="field"><label for="documentNumber">Номер *</label><input id="documentNumber" autocomplete="off"></div>
+            <div class="field"><label for="documentDate">Дата *</label><input id="documentDate" type="date"></div>
+            <div class="field"><label for="periodFrom">Період з</label><input id="periodFrom" type="date"></div>
+            <div class="field"><label for="periodTo">Період по</label><input id="periodTo" type="date"></div>
+            <div class="field"><label for="paymentDays">Строк оплати, банківських днів</label><input id="paymentDays" type="number" min="0" step="1" value="5"></div>
+            <div class="field"><label for="currency">Валюта</label><select id="currency"><option value="UAH">UAH — гривня</option><option value="EUR">EUR — євро</option><option value="USD">USD — долар</option><option value="PLN">PLN — злотий</option></select></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head services-head">
+            <div><p class="section-kicker">05</p><h2>Послуги</h2></div>
+            <button type="button" class="button secondary" id="addServiceButton">+ Додати позицію</button>
+          </div>
+          <div id="servicesList" class="services-list"></div>
+          <div class="totals">
+            <span>Разом</span>
+            <strong id="totalAmount">0,00 грн</strong>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div><p class="section-kicker">06</p><h2>Генерація</h2></div>
+          </div>
+          <div class="grid two">
+            <fieldset class="choice-group">
+              <legend>Документи</legend>
+              <label class="choice"><input type="checkbox" id="generateInvoice" checked> Рахунок</label>
+              <label class="choice"><input type="checkbox" id="generateAct" checked> Акт</label>
+            </fieldset>
+            <fieldset class="choice-group">
+              <legend>Формат</legend>
+              <label class="choice"><input type="radio" name="outputFormat" value="docx" checked> DOCX</label>
+              <label class="choice"><input type="radio" name="outputFormat" value="pdf"> PDF</label>
+            </fieldset>
+            <div class="field"><label for="invoiceFilename">Ім’я файлу рахунку</label><input id="invoiceFilename" value="Rakhunok_{number}" autocomplete="off"></div>
+            <div class="field"><label for="actFilename">Ім’я файлу акта</label><input id="actFilename" value="Akt_{number}" autocomplete="off"></div>
+          </div>
+          <div id="validationMessage" class="validation" hidden></div>
+          <button type="submit" class="button primary generate-button">Згенерувати</button>
+        </section>
+      </form>
+    </section>
+
+    <aside class="preview-panel">
+      <div class="preview-sticky">
+        <div class="preview-tabs">
+          <button type="button" class="preview-tab active" data-preview="invoice">Рахунок</button>
+          <button type="button" class="preview-tab" data-preview="act">Акт</button>
+        </div>
+        <div id="preview" class="document-preview"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <strong>Приватність:</strong> застосунок не використовує localStorage, sessionStorage, cookies, IndexedDB, аналітику або серверне API для введених даних. JSON зберігається лише за вашою явною дією.
+  </footer>
+
+  <template id="serviceTemplate">
+    <div class="service-row">
+      <div class="service-number"></div>
+      <div class="field service-name"><label>Найменування *</label><input data-service="name" autocomplete="off"></div>
+      <div class="field"><label>Од.</label><input data-service="unit" value="посл." autocomplete="off"></div>
+      <div class="field"><label>Кількість *</label><input data-service="quantity" type="number" min="0" step="0.01" value="1"></div>
+      <div class="field"><label>Ціна *</label><input data-service="price" type="number" min="0" step="0.01" value="0"></div>
+      <div class="service-sum"><span>Сума</span><strong data-service-sum>0,00</strong></div>
+      <button type="button" class="icon-button" data-remove-service aria-label="Видалити позицію">×</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
