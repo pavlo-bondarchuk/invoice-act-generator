@@ -7,8 +7,8 @@
   <title>Invoice & Act Generator</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.umd.cjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/pdfmake.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/vfs_fonts.js"></script>
 </head>
 <body>
   <header class="app-header">
@@ -39,12 +39,7 @@
 
       <form id="generatorForm" novalidate>
         <section class="card">
-          <div class="section-head">
-            <div>
-              <p class="section-kicker">01</p>
-              <h2>Виконавець</h2>
-            </div>
-          </div>
+          <div class="section-head"><div><p class="section-kicker">01</p><h2>Виконавець</h2></div></div>
           <div class="grid two">
             <div class="field span-2"><label for="sellerName">Назва / ПІБ *</label><input id="sellerName" autocomplete="off"></div>
             <div class="field"><label for="sellerTaxId">ІПН / РНОКПП *</label><input id="sellerTaxId" autocomplete="off"></div>
@@ -58,9 +53,7 @@
         </section>
 
         <section class="card">
-          <div class="section-head">
-            <div><p class="section-kicker">02</p><h2>Замовник</h2></div>
-          </div>
+          <div class="section-head"><div><p class="section-kicker">02</p><h2>Замовник</h2></div></div>
           <div class="grid two">
             <div class="field span-2"><label for="customerName">Назва / ПІБ *</label><input id="customerName" autocomplete="off"></div>
             <div class="field"><label for="customerTaxId">ЄДРПОУ / ІПН *</label><input id="customerTaxId" autocomplete="off"></div>
@@ -72,9 +65,7 @@
         </section>
 
         <section class="card">
-          <div class="section-head">
-            <div><p class="section-kicker">03</p><h2>Договір</h2></div>
-          </div>
+          <div class="section-head"><div><p class="section-kicker">03</p><h2>Договір</h2></div></div>
           <div class="grid two">
             <div class="field"><label for="contractNumber">Номер</label><input id="contractNumber" autocomplete="off"></div>
             <div class="field"><label for="contractDate">Дата</label><input id="contractDate" type="date"></div>
@@ -83,9 +74,7 @@
         </section>
 
         <section class="card">
-          <div class="section-head">
-            <div><p class="section-kicker">04</p><h2>Документ</h2></div>
-          </div>
+          <div class="section-head"><div><p class="section-kicker">04</p><h2>Документ</h2></div></div>
           <div class="grid two">
             <div class="field"><label for="documentNumber">Номер *</label><input id="documentNumber" autocomplete="off"></div>
             <div class="field"><label for="documentDate">Дата *</label><input id="documentDate" type="date"></div>
@@ -97,21 +86,13 @@
         </section>
 
         <section class="card">
-          <div class="section-head services-head">
-            <div><p class="section-kicker">05</p><h2>Послуги</h2></div>
-            <button type="button" class="button secondary" id="addServiceButton">+ Додати позицію</button>
-          </div>
+          <div class="section-head services-head"><div><p class="section-kicker">05</p><h2>Послуги</h2></div><button type="button" class="button secondary" id="addServiceButton">+ Додати позицію</button></div>
           <div id="servicesList" class="services-list"></div>
-          <div class="totals">
-            <span>Разом</span>
-            <strong id="totalAmount">0,00 грн</strong>
-          </div>
+          <div class="totals"><span>Разом</span><strong id="totalAmount">0,00 грн</strong></div>
         </section>
 
         <section class="card">
-          <div class="section-head">
-            <div><p class="section-kicker">06</p><h2>Генерація</h2></div>
-          </div>
+          <div class="section-head"><div><p class="section-kicker">06</p><h2>Генерація</h2></div></div>
           <div class="grid two">
             <fieldset class="choice-group">
               <legend>Документи</legend>
@@ -143,9 +124,7 @@
     </aside>
   </main>
 
-  <footer>
-    <strong>Приватність:</strong> застосунок не використовує localStorage, sessionStorage, cookies, IndexedDB, аналітику або серверне API для введених даних. JSON зберігається лише за вашою явною дією.
-  </footer>
+  <footer><strong>Приватність:</strong> застосунок не використовує localStorage, sessionStorage, cookies, IndexedDB, аналітику або серверне API для введених даних. JSON зберігається лише за вашою явною дією.</footer>
 
   <template id="serviceTemplate">
     <div class="service-row">
@@ -160,5 +139,6 @@
   </template>
 
   <script src="app.js"></script>
+  <script src="pdf.js"></script>
 </body>
 </html>
