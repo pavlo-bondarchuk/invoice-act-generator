@@ -6,7 +6,6 @@
   <meta name="color-scheme" content="light">
   <title>Invoice & Act Generator</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.umd.cjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/pdfmake.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/vfs_fonts.js"></script>
 </head>
@@ -69,7 +68,7 @@
           <div class="grid two">
             <div class="field"><label for="contractNumber">Номер</label><input id="contractNumber" autocomplete="off"></div>
             <div class="field"><label for="contractDate">Дата</label><input id="contractDate" type="date"></div>
-            <div class="field span-2"><label for="contractTitle">Назва / предмет договору</label><input id="contractTitle" placeholder="про надання послуг" autocomplete="off"></div>
+            <div class="field span-2"><label for="contractTitle">Назва / предмет договору</label><input id="contractTitle" placeholder="Напр.: про надання послуг з розробки вебсайтів" autocomplete="off"></div>
           </div>
         </section>
 
@@ -139,6 +138,7 @@
   </template>
 
   <script src="app.js"></script>
+  <script src="fixes.js"></script>
   <script src="pdf.js"></script>
 </body>
 </html>
