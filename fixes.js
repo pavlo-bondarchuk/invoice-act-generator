@@ -35,6 +35,12 @@ window.periodSuffix=function(d){
   return alreadyIncluded?'':` ${period}`;
 };
 
+window.paymentPurpose=function(d){
+  const names=(d.services||[]).map(service=>String(service.name||'').trim()).filter(Boolean);
+  const service=names.length===1?names[0].toLowerCase():'надані послуги';
+  return `Оплата за ${service}${d.sellerVat==='Без ПДВ'?', без ПДВ':''}`;
+};
+
 window.generateDocx=async function(d,type){
   await ensureDocx();
   return originalGenerateDocx(d,type);
